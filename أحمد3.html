@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>صفحة الطالب أحمد3</title>
+  <style>
+    body { font-family: 'Amiri', serif; background: linear-gradient(to bottom right, #f5f0e1, #e0d6c6); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+    h1 { font-size: 2rem; color: #2f2f2f; }
+    .button-container { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 400px; width: 100%; }
+    .btn { background-color: #8c6e4e; color: white; padding: 12px; border-radius: 10px; text-align: center; text-decoration: none; font-size: 1.1rem; }
+    .btn:hover { background-color: #a07f5c; }
+    @media (max-width: 500px) { .button-container { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>مرحبًا أحمد3</h1>
+  <div class="button-container">
+    <a href="https://example.com/about" class="btn">ذاتية الطالب</a>
+    <a href="https://example.com/quran" class="btn">القرآن الكريم</a>
+    <a href="https://example.com/hadith" class="btn">الحديث</a>
+    <a href="https://example.com/attendance" class="btn">تسجيل الحضور</a>
+  </div>
+  <script>
+    document.getElementById('nfc-button').addEventListener('click', async () => {
+      if ('NDEFReader' in window) {
+        try {
+          const ndef = new NDEFReader();
+          await ndef.scan();
+          console.log("بانتظار البطاقة...");
+
+          ndef.onreading = event => {
+            const decoder = new TextDecoder();
+            for (const record of event.message.records) {
+              const data = decoder.decode(record.data);
+              console.log("تمت قراءة:", data);
+
+              const correctPassword = "ه14864";
+              if (data.trim() === correctPassword) {
+                document.getElementById("login-box").style.display = "none";
+                document.getElementById("main-content").style.display = "block";
+              } else {
+                document.getElementById("error").style.display = "block";
+              }
+            }
+          };
+        } catch (error) {
+          console.error("خطأ في قراءة NFC:", error);
+          alert("حدث خطأ أثناء محاولة قراءة البطاقة.");
+        }
+      } else {
+        alert("جهازك أو متصفحك لا يدعم NFC.");
+      }
+    });
+  </script>
+</body>
+</html>
