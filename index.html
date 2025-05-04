@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>صفحة إسلامية</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Amiri', serif;
+      background: linear-gradient(to bottom right, #f5f0e1, #e0d6c6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    #login-box {
+      text-align: center;
+      background-color: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #8c6e4e;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #a07f5c;
+    }
+    #main-content {
+      display: none;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #2f2f2f;
+    }
+    .button-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 30px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .btn {
+      background-color: #8c6e4e;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background-color: #a07f5c;
+    }
+    @media (max-width: 500px) {
+      .button-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- صندوق NFC -->
+  <div id="login-box">
+    <h2>قرب بطاقة الـ NFC للدخول</h2>
+    <button id="nfc-button">قراءة البطاقة</button>
+    <p id="error" style="color: red; display: none;">البطاقة غير صالحة</p>
+  </div>
+
+  <!-- المحتوى الرئيسي -->
+  <div id="main-content">
+    <header>
+      <h1>مرحبًا بكم في الصفحة الإسلامية</h1>
+    </header>
+    <div class="button-container">
+      <a href="https://example.com/about" class="btn">ذاتية الطالب</a>
+      <a href="https://example.com/quran" class="btn">القرآن الكريم</a>
+      <a href="https://example.com/hadith" class="btn">الحديث</a>
+      <a href="https://example.com/attendance" class="btn">تسجيل الحضور</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('nfc-button').addEventListener('click', async () => {
+      if ('NDEFReader' in window) {
+        try {
+          const ndef = new NDEFReader();
+          await ndef.scan();
+          console.log("بانتظار البطاقة...");
+
+          ndef.onreading = event => {
+            const decoder = new TextDecoder();
+            for (const record of event.message.records) {
+              const data = decoder.decode(record.data);
+              console.log("تمت قراءة:", data);
+
+              const correctPassword = "ه14863";
+              if (data.trim() === correctPassword) {
+                document.getElementById("login-box").style.display = "none";
+                document.getElementById("main-content").style.display = "block";
+              } else {
+                document.getElementById("error").style.display = "block";
+              }
+            }
+          };
+        } catch (error) {
+          console.error("خطأ في قراءة NFC:", error);
+          alert("حدث خطأ أثناء محاولة قراءة البطاقة.");
+        }
+      } else {
+        alert("جهازك أو متصفحك لا يدعم NFC.");
+      }
+    });
+  </script>
+</body>
+</html>
